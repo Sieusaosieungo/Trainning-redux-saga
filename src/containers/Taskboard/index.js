@@ -44,7 +44,14 @@ const Taskboard = ({ classes }) => {
             task => task.status === status.value,
           );
           return (
-            <TaskList tasks={taskFiltered} status={status} key={status.value} />
+            <div>
+              {' '}
+              <TaskList
+                tasks={taskFiltered}
+                status={status}
+                key={status.value}
+              />
+            </div>
           );
         })}
       </Grid>
