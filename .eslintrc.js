@@ -28,6 +28,7 @@ module.exports = {
     'prettier/prettier': ['error'],
     'no-use-before-define': 0,
     'no-param-reassign': 0,
+    'react/jsx-uses-vars': 2,
   },
   plugins: ['prettier'],
   env: {

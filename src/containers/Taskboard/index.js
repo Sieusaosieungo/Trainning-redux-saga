@@ -35,6 +35,8 @@ const Taskboard = ({ classes }) => {
     open: false,
   });
 
+  var x = 10;
+
   const renderBoard = () => {
     let xhtml = null;
     xhtml = (
