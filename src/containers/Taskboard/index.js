@@ -4,36 +4,24 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styles from './styles';
 import { STATUSES } from '../../constants';
 import TaskList from '../../components/TaskList';
 import TaskForm from '../../components/TaskForm';
+import * as taskActions from '../../actions/task';
+import SearchBox from '../../components/SearchBox';
 
-const listTask = [
-  {
-    id: 1,
-    title: 'Read book',
-    description: 'Read material ui book',
-    status: 0,
-  },
-  {
-    id: 2,
-    title: 'Play football',
-    description: 'With my friend',
-    status: 2,
-  },
-  {
-    id: 1,
-    title: 'Play game',
-    description: '',
-    status: 1,
-  },
-];
-
-const Taskboard = ({ classes }) => {
+const Taskboard = ({ classes, taskActionCreators, listTask }) => {
   const [state, setState] = useState({
     open: false,
   });
+
+  // useEffect(() => {
+  //   const { fetchListTask } = taskActionCreators;
+  //   fetchListTask();
+  // }, []);
 
   const renderBoard = () => {
     let xhtml = null;
@@ -44,14 +32,7 @@ const Taskboard = ({ classes }) => {
             task => task.status === status.value,
           );
           return (
-            <div>
-              {' '}
-              <TaskList
-                tasks={taskFiltered}
-                status={status}
-                key={status.value}
-              />
-            </div>
+            <TaskList tasks={taskFiltered} status={status} key={status.value} />
           );
         })}
       </Grid>
@@ -75,8 +56,36 @@ const Taskboard = ({ classes }) => {
     return xhtml;
   };
 
+  const loadData = () => {
+    const { fetchListTask } = taskActionCreators;
+    fetchListTask();
+  };
+
+  const handleFilter = e => {
+    const { value } = e.target;
+    const { filterTask } = taskActionCreators;
+    filterTask(value);
+  };
+
+  const renderSearchBox = () => {
+    let xhtml = null;
+    xhtml = <SearchBox handleChange={handleFilter} />;
+    return xhtml;
+  };
+
   return (
     <div className={classes.taskBoard}>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        onClick={loadData}
+        style={{
+          marginRight: 20,
+        }}
+      >
+        Load Data
+      </Button>
       <Button
         variant="contained"
         color="primary"
@@ -86,6 +95,7 @@ const Taskboard = ({ classes }) => {
         <AddIcon />
         Thêm mới công việc
       </Button>
+      {renderSearchBox()}
       {renderBoard()}
       {renderForm()}
     </div>
@@ -94,6 +104,24 @@ const Taskboard = ({ classes }) => {
 
 Taskboard.propTypes = {
   classes: PropTypes.object,
+  taskActionCreators: PropTypes.shape({
+    fetchListTask: PropTypes.func,
+    filterTask: PropTypes.func,
+  }),
+  listTask: PropTypes.array,
 };
 
-export default withStyles(styles)(Taskboard);
+const mapStateToProps = state => {
+  return {
+    listTask: state.task.listTask,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    taskActionCreators: bindActionCreators(taskActions, dispatch),
+  };
+};
+
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(Taskboard),
+);
