@@ -9,6 +9,7 @@ import Taskboard from '../Taskboard/index.js';
 import theme from '../../commons/Theme';
 import configureStore from '../../redux/configStore';
 import GlobalLoading from '../../components/GlobalLoading/index.js';
+import ModalApp from '../../components/Modal/index.js';
 
 const store = configureStore();
 
@@ -17,6 +18,7 @@ const App = () => (
     <ThemeProvider theme={theme}>
       <ToastContainer />
       <GlobalLoading />
+      <ModalApp />
       <Taskboard />
     </ThemeProvider>
   </Provider>

@@ -6,6 +6,7 @@ const theme = createMuiTheme({
     primary: '#D32f2f',
     secondary: '#00BCD4',
     error: '#E64A19',
+    textColor: '#FFFFFF',
   },
 
   // typoraphy
