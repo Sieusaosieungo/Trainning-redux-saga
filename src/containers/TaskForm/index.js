@@ -6,19 +6,23 @@ import { compose, bindActionCreators } from 'redux';
 import { reduxForm, Field } from 'redux-form';
 import styles from './styles';
 import * as modalActions from '../../actions/modal';
+import * as taskActions from '../../actions/task';
 import renderTextField from '../../components/FormHelper/TextField';
 import validate from './validate';
 
 const TaskForm = ({
   classes,
   modalActionCreators,
+  taskActionCreators,
   handleSubmit,
   invalid,
   submitting,
 }) => {
   const { hideModal } = modalActionCreators;
-  const handleSubmitForm = () => {
-    // console.log(data);
+  const handleSubmitForm = data => {
+    const { addTask } = taskActionCreators;
+    const { title, description } = data;
+    addTask(title, description);
   };
 
   return (
@@ -76,12 +80,16 @@ TaskForm.propTypes = {
   handleSubmit: PropTypes.func,
   invalid: PropTypes.bool,
   submitting: PropTypes.bool,
+  taskActionCreators: PropTypes.shape({
+    addTask: PropTypes.func,
+  }),
 };
 
 const mapStateToProps = null;
 const mapDispatchToProps = dispatch => {
   return {
     modalActionCreators: bindActionCreators(modalActions, dispatch),
+    taskActionCreators: bindActionCreators(taskActions, dispatch),
   };
 };
 
