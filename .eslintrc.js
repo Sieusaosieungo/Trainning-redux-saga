@@ -30,6 +30,7 @@ module.exports = {
     'no-param-reassign': 0,
     'react/jsx-uses-vars': 2,
     'class-methods-use-this': 0,
+    'react/jsx-props-no-spreading': 0,
   },
   plugins: ['prettier'],
   env: {
