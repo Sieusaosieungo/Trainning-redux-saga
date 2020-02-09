@@ -6,9 +6,10 @@ import {
   delay,
   takeLatest,
   takeEvery,
+  select,
 } from 'redux-saga/effects';
 import * as taskTypes from '../constants/task';
-import { getList, addTask } from '../apis/task';
+import { getList, addTask, updateTask, deleteTask } from '../apis/task';
 import { STATUS_CODE, STATUSES } from '../constants';
 import {
   fetchListTaskSuccess,
@@ -16,6 +17,10 @@ import {
   addTaskSuccess,
   addTaskFailed,
   fetchListTask,
+  updateTaskSuccess,
+  updateTaskFailed,
+  deleteTaskSuccess,
+  deleteTaskFailed,
 } from '../actions/task';
 import { showLoading, hideLoading } from '../actions/ui';
 import { hideModal } from '../actions/modal';
@@ -66,10 +71,50 @@ function* addTaskSaga({ payload }) {
   yield put(hideLoading());
 }
 
+function* updateTaskSaga({ payload }) {
+  const { title, description, status } = payload;
+  const taskEditing = yield select(state => state.task.taskEditing);
+  yield put(showLoading());
+  const res = yield call(
+    updateTask,
+    { title, description, status },
+    taskEditing.id,
+  );
+
+  const { data, status: statusCode } = res;
+  if (statusCode === STATUS_CODE.SUCCESS) {
+    yield put(updateTaskSuccess(data));
+    yield put(hideModal());
+  } else {
+    yield put(updateTaskFailed(data));
+  }
+  yield delay(1000);
+  yield put(hideLoading());
+}
+
+function* deleteTaskSaga({ payload }) {
+  const { id } = payload;
+
+  yield put(showLoading());
+  const res = yield call(deleteTask, id);
+
+  const { data, status: statusCode } = res;
+  if (statusCode === STATUS_CODE.SUCCESS) {
+    yield put(deleteTaskSuccess(id));
+    yield put(hideModal());
+  } else {
+    yield put(deleteTaskFailed(data));
+  }
+  yield delay(1000);
+  yield put(hideLoading());
+}
+
 function* rootSaga() {
   yield fork(watchFetchListTaskAction);
   yield takeLatest(taskTypes.FILTER_TASK, filterTaskSaga);
   yield takeEvery(taskTypes.ADD_TASK, addTaskSaga);
+  yield takeLatest(taskTypes.UPDATE_TASK, updateTaskSaga);
+  yield takeLatest(taskTypes.DELETE_TASK, deleteTaskSaga);
 }
 
 export default rootSaga;

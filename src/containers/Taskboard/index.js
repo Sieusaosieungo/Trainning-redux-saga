@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Box } from '@material-ui/core';
 import styles from './styles';
 import { STATUSES } from '../../constants';
 import TaskList from '../../components/TaskList';
@@ -29,6 +30,65 @@ const Taskboard = ({
   //   fetchListTask();
   // }, []);
 
+  const handleEditTask = task => {
+    const { setTaskEditing } = taskActionCreators;
+    setTaskEditing(task);
+
+    const {
+      showModal,
+      changeModalTitle,
+      changeModalContent,
+    } = modalActionCreators;
+
+    showModal();
+    changeModalTitle('Cập nhật công việc');
+    changeModalContent(<TaskForm />);
+  };
+
+  const showModalDeleteTask = task => {
+    const {
+      showModal,
+      hideModal,
+      changeModalTitle,
+      changeModalContent,
+    } = modalActionCreators;
+
+    showModal();
+    changeModalTitle('Xóa công việc');
+    changeModalContent(
+      <div className={classes.modalDelete}>
+        <div className={classes.modalConfirmText}>
+          Bạn chắc chắn muốn xóa{' '}
+          <span className={classes.modalConfirmTextBold}>{task.title}</span>?
+        </div>
+        <Box display="flex" flexDirection="row-reverse" mt={2}>
+          <Box ml={1}>
+            <Button variant="contained" onClick={hideModal}>
+              Hủy bỏ
+            </Button>
+          </Box>
+          <Box />
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleDeleteTask(task)}
+            >
+              Đồng ý
+            </Button>
+          </Box>
+          <Box />
+        </Box>
+      </div>,
+    );
+  };
+
+  const handleDeleteTask = task => {
+    const { id } = task;
+    const { deleteTask } = taskActionCreators;
+    deleteTask(id);
+  };
+
   const renderBoard = () => {
     let xhtml = null;
     xhtml = (
@@ -38,7 +98,13 @@ const Taskboard = ({
             task => task.status === status.value,
           );
           return (
-            <TaskList tasks={taskFiltered} status={status} key={status.value} />
+            <TaskList
+              tasks={taskFiltered}
+              status={status}
+              key={status.value}
+              onClickEdit={handleEditTask}
+              onClickDelete={showModalDeleteTask}
+            />
           );
         })}
       </Grid>
@@ -46,17 +112,14 @@ const Taskboard = ({
     return xhtml;
   };
 
-  // const handleClose = () => {
-  //   setState({ open: false });
-  // };
-
   const openForm = () => {
     const {
       showModal,
       changeModalTitle,
       changeModalContent,
     } = modalActionCreators;
-
+    const { setTaskEditing } = taskActionCreators;
+    setTaskEditing(null);
     showModal();
     changeModalTitle('Thêm mới công việc');
     changeModalContent(<TaskForm />);
@@ -112,6 +175,8 @@ Taskboard.propTypes = {
   taskActionCreators: PropTypes.shape({
     fetchListTask: PropTypes.func,
     filterTask: PropTypes.func,
+    setTaskEditing: PropTypes.func,
+    deleteTask: PropTypes.func,
   }),
   modalActionCreators: PropTypes.shape({
     showModal: PropTypes.func,
