@@ -8,9 +8,9 @@ import {
   takeEvery,
   select,
 } from 'redux-saga/effects';
-import * as taskTypes from '../constants/task';
-import { getList, addTask, updateTask, deleteTask } from '../apis/task';
-import { STATUS_CODE, STATUSES } from '../constants';
+import * as taskTypes from '../../../constants/task';
+import { getList, addTask, updateTask, deleteTask } from '../../../apis/task';
+import { STATUS_CODE, STATUSES } from '../../../constants';
 import {
   fetchListTaskSuccess,
   fetchListTaskFailed,
@@ -21,9 +21,9 @@ import {
   updateTaskFailed,
   deleteTaskSuccess,
   deleteTaskFailed,
-} from '../actions/task';
-import { showLoading, hideLoading } from '../actions/ui';
-import { hideModal } from '../actions/modal';
+} from './action';
+import { showLoading, hideLoading } from '../ui/action';
+import { hideModal } from '../modal/action';
 
 function* watchFetchListTaskAction() {
   while (true) {
@@ -109,12 +109,10 @@ function* deleteTaskSaga({ payload }) {
   yield put(hideLoading());
 }
 
-function* rootSaga() {
+export function* taskSaga() {
   yield fork(watchFetchListTaskAction);
   yield takeLatest(taskTypes.FILTER_TASK, filterTaskSaga);
   yield takeEvery(taskTypes.ADD_TASK, addTaskSaga);
   yield takeLatest(taskTypes.UPDATE_TASK, updateTaskSaga);
   yield takeLatest(taskTypes.DELETE_TASK, deleteTaskSaga);
 }
-
-export default rootSaga;

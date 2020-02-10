@@ -1,4 +1,4 @@
-import * as type from '../constants/ui';
+import * as type from '../../../constants/ui';
 
 const initialState = {
   showLoading: false,

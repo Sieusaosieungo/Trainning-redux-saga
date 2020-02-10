@@ -8,7 +8,7 @@ import { BrowserRouter, Switch } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import styles from './styles.js';
 import theme from '../../commons/Theme';
-import configureStore from '../../redux/configStore';
+import configureStore from '../../store/configStore';
 import GlobalLoading from '../../components/GlobalLoading/index.js';
 import ModalApp from '../../components/Modal/index.js';
 import { ADMIN_ROUTES } from '../../constants';

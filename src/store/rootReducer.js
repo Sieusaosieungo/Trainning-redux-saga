@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
-import taskReducer from './task';
-import uiReducer from './ui';
-import modalReducer from './modal';
+import taskReducer from './modules/task/reducer';
+import uiReducer from './modules/ui/reducer';
+import modalReducer from './modules/modal/reducer';
 
 const rootReducer = combineReducers({
   task: taskReducer,

@@ -3,10 +3,11 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
+import cn from 'classnames';
 import styles from './styles';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import * as uiActions from '../../actions/ui';
+import * as uiActions from '../../store/modules/ui/action';
 
 const Dashboard = ({ children, classes, name, open, uiActionsCreators }) => {
   const handleToggleSidebar = value => {
@@ -26,7 +27,13 @@ const Dashboard = ({ children, classes, name, open, uiActionsCreators }) => {
       />
       <div className={classes.wrapper}>
         <Sidebar showSidebar={open} onToggleSidebar={handleToggleSidebar} />
-        <div className={classes.wrapperContent}>{children}</div>
+        <div
+          className={cn(classes.wrapperContent, {
+            [classes.shiftLeft]: open === false,
+          })}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

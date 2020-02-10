@@ -7,12 +7,6 @@
       "status": 2
     },
     {
-      "title": "Learning JAVAA",
-      "description": "OOP",
-      "status": 0,
-      "id": 4
-    },
-    {
       "title": "Read boo",
       "description": "Learning reactJS",
       "status": 1,
@@ -121,18 +115,6 @@
       "id": 27
     },
     {
-      "title": "fsdfsdfs",
-      "description": "sdfdsfsdfsdf",
-      "status": 0,
-      "id": 28
-    },
-    {
-      "title": "fghfghfgh",
-      "description": "fghfhfg",
-      "status": 0,
-      "id": 29
-    },
-    {
       "title": "adsadad",
       "description": "adasd",
       "status": 0,
@@ -161,12 +143,6 @@
       "description": "dfgdfg",
       "status": 0,
       "id": 34
-    },
-    {
-      "title": "adsasda",
-      "description": "asdasds",
-      "status": 0,
-      "id": 35
     }
   ]
 }

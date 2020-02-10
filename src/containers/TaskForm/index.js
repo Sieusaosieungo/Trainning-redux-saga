@@ -1,33 +1,26 @@
 import React from 'react';
 import { withStyles, Grid, Button, Box, MenuItem } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose, bindActionCreators } from 'redux';
+import { useSelector, useDispatch, connect } from 'react-redux';
+import { compose } from 'redux';
 import { reduxForm, Field } from 'redux-form';
 import styles from './styles';
-import * as modalActions from '../../actions/modal';
-import * as taskActions from '../../actions/task';
+import * as modalActions from '../../store/modules/modal/action';
+import * as taskActions from '../../store/modules/task/action';
 import renderTextField from '../../components/FormHelper/TextField';
 import validate from './validate';
 import renderSelectField from '../../components/FormHelper/Select';
 
-const TaskForm = ({
-  classes,
-  modalActionCreators,
-  taskActionCreators,
-  handleSubmit,
-  invalid,
-  submitting,
-  taskEditing,
-}) => {
-  const { hideModal } = modalActionCreators;
+const TaskForm = ({ classes, handleSubmit, invalid, submitting }) => {
+  const dispatch = useDispatch();
+  const taskEditing = useSelector(state => state.task.taskEditing);
+
   const handleSubmitForm = data => {
-    const { addTask, updateTask } = taskActionCreators;
     const { title, description, status } = data;
     if (taskEditing && taskEditing.id) {
-      updateTask(title, description, status);
+      dispatch(taskActions.updateTask(title, description, status));
     } else {
-      addTask(title, description);
+      dispatch(taskActions.addTask(title, description));
     }
   };
 
@@ -62,7 +55,6 @@ const TaskForm = ({
             margin="normal"
             name="title"
             component={renderTextField}
-            // value={taskEditing ? taskEditing.title : null}
           />
         </Grid>
         <Grid item md={12}>
@@ -75,14 +67,16 @@ const TaskForm = ({
             margin="normal"
             name="description"
             component={renderTextField}
-            // value={taskEditing ? taskEditing.description : null}
           />
         </Grid>
         {renderStatusSelection()}
         <Grid item md={12}>
           <Box display="flex" flexDirection="row-reverse" mt={2}>
             <Box ml={1}>
-              <Button variant="contained" onClick={hideModal}>
+              <Button
+                variant="contained"
+                onClick={() => dispatch(modalActions.hideModal())}
+              >
                 Hủy bỏ
               </Button>
             </Box>
@@ -103,21 +97,12 @@ const TaskForm = ({
 
 TaskForm.propTypes = {
   classes: PropTypes.object,
-  modalActionCreators: PropTypes.shape({
-    hideModal: PropTypes.func,
-  }),
   handleSubmit: PropTypes.func,
   invalid: PropTypes.bool,
   submitting: PropTypes.bool,
-  taskActionCreators: PropTypes.shape({
-    addTask: PropTypes.func,
-    updateTask: PropTypes.func,
-  }),
-  taskEditing: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
-  taskEditing: state.task.taskEditing,
   initialValues: {
     title: state.task.taskEditing ? state.task.taskEditing.title : null,
     description: state.task.taskEditing
@@ -126,14 +111,8 @@ const mapStateToProps = state => ({
     status: state.task.taskEditing ? state.task.taskEditing.status : null,
   },
 });
-const mapDispatchToProps = dispatch => {
-  return {
-    modalActionCreators: bindActionCreators(modalActions, dispatch),
-    taskActionCreators: bindActionCreators(taskActions, dispatch),
-  };
-};
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, null);
 
 const FORM_NAME = 'TASK_MANAGEMENT';
 const withReduxForm = reduxForm({

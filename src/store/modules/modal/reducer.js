@@ -1,4 +1,4 @@
-import * as types from '../constants/modal';
+import * as types from '../../../constants/modal';
 
 const initialState = {
   showModal: false,

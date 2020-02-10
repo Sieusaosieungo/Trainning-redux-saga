@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Clear';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
-import * as modalActions from '../../actions/modal';
+import * as modalActions from '../../store/modules/modal/action';
 import styles from './styles';
 
 const ModalApp = ({ classes, open, component, modalActionCreators, title }) => {

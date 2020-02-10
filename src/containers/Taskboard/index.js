@@ -4,89 +4,66 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
 import styles from './styles';
 import { STATUSES } from '../../constants';
 import TaskList from '../../components/TaskList';
 import TaskForm from '../TaskForm';
-import * as taskActions from '../../actions/task';
-import * as modalActions from '../../actions/modal';
+import * as taskActions from '../../store/modules/task/action';
+import * as modalActions from '../../store/modules/modal/action';
 import SearchBox from '../../components/SearchBox';
 
-const Taskboard = ({
-  classes,
-  taskActionCreators,
-  modalActionCreators,
-  listTask,
-}) => {
-  // const [state, setState] = useState({
-  //   open: false,
-  // });
-
-  // useEffect(() => {
-  //   const { fetchListTask } = taskActionCreators;
-  //   fetchListTask();
-  // }, []);
+const Taskboard = ({ classes }) => {
+  const listTask = useSelector(state => state.task.listTask);
+  const dispatch = useDispatch();
 
   const handleEditTask = task => {
-    const { setTaskEditing } = taskActionCreators;
-    setTaskEditing(task);
-
-    const {
-      showModal,
-      changeModalTitle,
-      changeModalContent,
-    } = modalActionCreators;
-
-    showModal();
-    changeModalTitle('Cập nhật công việc');
-    changeModalContent(<TaskForm />);
+    dispatch(taskActions.setTaskEditing(task));
+    dispatch(modalActions.showModal());
+    dispatch(modalActions.changeModalTitle('Cập nhật công việc'));
+    dispatch(modalActions.changeModalContent(<TaskForm />));
   };
 
   const showModalDeleteTask = task => {
-    const {
-      showModal,
-      hideModal,
-      changeModalTitle,
-      changeModalContent,
-    } = modalActionCreators;
-
-    showModal();
-    changeModalTitle('Xóa công việc');
-    changeModalContent(
-      <div className={classes.modalDelete}>
-        <div className={classes.modalConfirmText}>
-          Bạn chắc chắn muốn xóa{' '}
-          <span className={classes.modalConfirmTextBold}>{task.title}</span>?
-        </div>
-        <Box display="flex" flexDirection="row-reverse" mt={2}>
-          <Box ml={1}>
-            <Button variant="contained" onClick={hideModal}>
-              Hủy bỏ
-            </Button>
+    dispatch(modalActions.showModal());
+    dispatch(modalActions.changeModalTitle('Xóa công việc'));
+    dispatch(
+      modalActions.changeModalContent(
+        <div className={classes.modalDelete}>
+          <div className={classes.modalConfirmText}>
+            Bạn chắc chắn muốn xóa{' '}
+            <span className={classes.modalConfirmTextBold}>{task.title}</span>?
+          </div>
+          <Box display="flex" flexDirection="row-reverse" mt={2}>
+            <Box ml={1}>
+              <Button
+                variant="contained"
+                onClick={() => dispatch(modalActions.hideModal())}
+              >
+                Hủy bỏ
+              </Button>
+            </Box>
+            <Box />
+            <Box>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleDeleteTask(task)}
+              >
+                Đồng ý
+              </Button>
+            </Box>
+            <Box />
           </Box>
-          <Box />
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleDeleteTask(task)}
-            >
-              Đồng ý
-            </Button>
-          </Box>
-          <Box />
-        </Box>
-      </div>,
+        </div>,
+      ),
     );
   };
 
   const handleDeleteTask = task => {
     const { id } = task;
-    const { deleteTask } = taskActionCreators;
-    deleteTask(id);
+    dispatch(taskActions.deleteTask(id));
   };
 
   const renderBoard = () => {
@@ -113,27 +90,19 @@ const Taskboard = ({
   };
 
   const openForm = () => {
-    const {
-      showModal,
-      changeModalTitle,
-      changeModalContent,
-    } = modalActionCreators;
-    const { setTaskEditing } = taskActionCreators;
-    setTaskEditing(null);
-    showModal();
-    changeModalTitle('Thêm mới công việc');
-    changeModalContent(<TaskForm />);
+    dispatch(taskActions.setTaskEditing(null));
+    dispatch(modalActions.showModal());
+    dispatch(modalActions.changeModalTitle('Thêm mới công việc'));
+    dispatch(modalActions.changeModalContent(<TaskForm />));
   };
 
   const loadData = () => {
-    const { fetchListTask } = taskActionCreators;
-    fetchListTask();
+    dispatch(taskActions.fetchListTask());
   };
 
   const handleFilter = e => {
     const { value } = e.target;
-    const { filterTask } = taskActionCreators;
-    filterTask(value);
+    dispatch(taskActions.filterTask(value));
   };
 
   const renderSearchBox = () => {
@@ -172,33 +141,6 @@ const Taskboard = ({
 
 Taskboard.propTypes = {
   classes: PropTypes.object,
-  taskActionCreators: PropTypes.shape({
-    fetchListTask: PropTypes.func,
-    filterTask: PropTypes.func,
-    setTaskEditing: PropTypes.func,
-    deleteTask: PropTypes.func,
-  }),
-  modalActionCreators: PropTypes.shape({
-    showModal: PropTypes.func,
-    hideModal: PropTypes.func,
-    changeModalTitle: PropTypes.func,
-    changeModalContent: PropTypes.func,
-  }),
-  listTask: PropTypes.array,
 };
 
-const mapStateToProps = state => {
-  return {
-    listTask: state.task.listTask,
-  };
-};
-const mapDispatchToProps = dispatch => {
-  return {
-    taskActionCreators: bindActionCreators(taskActions, dispatch),
-    modalActionCreators: bindActionCreators(modalActions, dispatch),
-  };
-};
-
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(Taskboard),
-);
+export default withStyles(styles)(Taskboard);
