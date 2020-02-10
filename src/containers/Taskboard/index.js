@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@material-ui/core';
+import queryString from 'query-string';
 import styles from './styles';
 import { STATUSES } from '../../constants';
 import TaskList from '../../components/TaskList';
@@ -14,7 +15,10 @@ import * as taskActions from '../../store/modules/task/action';
 import * as modalActions from '../../store/modules/modal/action';
 import SearchBox from '../../components/SearchBox';
 
-const Taskboard = ({ classes }) => {
+const Taskboard = props => {
+  const { classes, location } = props;
+  const { status: statusRoute } = queryString.parse(location.search);
+
   const listTask = useSelector(state => state.task.listTask);
   const dispatch = useDispatch();
 
@@ -68,15 +72,21 @@ const Taskboard = ({ classes }) => {
 
   const renderBoard = () => {
     let xhtml = null;
+
     xhtml = (
       <Grid container spacing={2}>
         {STATUSES.map(status => {
           const taskFiltered = listTask.filter(
             task => task.status === status.value,
           );
+
           return (
             <TaskList
-              tasks={taskFiltered}
+              tasks={taskFiltered.filter(item => {
+                return statusRoute
+                  ? item.status.toString() === statusRoute
+                  : true;
+              })}
               status={status}
               key={status.value}
               onClickEdit={handleEditTask}
@@ -141,6 +151,7 @@ const Taskboard = ({ classes }) => {
 
 Taskboard.propTypes = {
   classes: PropTypes.object,
+  location: PropTypes.object,
 };
 
 export default withStyles(styles)(Taskboard);

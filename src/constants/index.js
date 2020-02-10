@@ -35,5 +35,6 @@ export const ADMIN_ROUTES = [
     path: '/task-board',
     name: 'Quản lý công việc',
     component: Taskboard,
+    exact: true,
   },
 ];

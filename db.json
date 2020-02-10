@@ -7,7 +7,7 @@
       "status": 2
     },
     {
-      "title": "Read boo",
+      "title": "Read book",
       "description": "Learning reactJS",
       "status": 1,
       "id": 6
@@ -15,7 +15,7 @@
     {
       "title": "Swimming",
       "description": "in the pool",
-      "status": 0,
+      "status": 1,
       "id": 7
     },
     {
