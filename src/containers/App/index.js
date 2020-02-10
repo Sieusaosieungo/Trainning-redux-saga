@@ -4,24 +4,48 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter, Switch } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import styles from './styles.js';
-import Taskboard from '../Taskboard/index.js';
 import theme from '../../commons/Theme';
 import configureStore from '../../redux/configStore';
 import GlobalLoading from '../../components/GlobalLoading/index.js';
 import ModalApp from '../../components/Modal/index.js';
+import { ADMIN_ROUTES } from '../../constants';
+import AdminLayoutRoute from '../../commons/Layout/AdminLayoutRoute/index.js';
 
 const store = configureStore();
 
-const App = () => (
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <ToastContainer />
-      <GlobalLoading />
-      <ModalApp />
-      <Taskboard />
-    </ThemeProvider>
-  </Provider>
-);
+const App = () => {
+  const renderAdminRoutes = () => {
+    let xhtml = null;
+    xhtml = ADMIN_ROUTES.map(route => {
+      return (
+        <AdminLayoutRoute
+          key={route.path}
+          path={route.path}
+          component={route.component}
+          exact={route.exact}
+          name={route.name}
+        />
+      );
+    });
+    return xhtml;
+  };
+
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <ToastContainer />
+          <GlobalLoading />
+          <ModalApp />
+          <Switch>{renderAdminRoutes()}</Switch>
+        </ThemeProvider>
+      </BrowserRouter>
+    </Provider>
+  );
+};
 
 export default withStyles(styles)(App);

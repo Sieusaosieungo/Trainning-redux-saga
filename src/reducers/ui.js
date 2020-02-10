@@ -2,6 +2,7 @@ import * as type from '../constants/ui';
 
 const initialState = {
   showLoading: false,
+  showSidebar: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -16,6 +17,18 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         showLoading: false,
+      };
+    }
+    case type.SHOW_SIDEBAR: {
+      return {
+        ...state,
+        showSidebar: true,
+      };
+    }
+    case type.HIDE_SIDEBAR: {
+      return {
+        ...state,
+        showSidebar: false,
       };
     }
     default:
