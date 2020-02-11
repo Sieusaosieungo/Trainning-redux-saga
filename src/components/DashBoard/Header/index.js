@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import styles from './styles';
 
-const PrimarySearchAppBar = ({
-  classes,
-  name,
-  showSidebar,
-  onToggleSidebar,
-}) => {
+const Header = ({ classes, name, showSidebar, onToggleSidebar, history }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
@@ -37,6 +34,12 @@ const PrimarySearchAppBar = ({
     handleMobileMenuClose();
   };
 
+  const handleLogout = () => {
+    if (history) {
+      history.push('/login');
+    }
+  };
+
   const handleMobileMenuOpen = event => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -52,7 +55,7 @@ const PrimarySearchAppBar = ({
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
@@ -136,11 +139,12 @@ const PrimarySearchAppBar = ({
   );
 };
 
-PrimarySearchAppBar.propTypes = {
+Header.propTypes = {
   classes: PropTypes.object,
   name: PropTypes.string,
   showSidebar: PropTypes.bool,
   onToggleSidebar: PropTypes.func,
+  history: PropTypes.object,
 };
 
-export default withStyles(styles)(PrimarySearchAppBar);
+export default compose(withStyles(styles), withRouter)(Header);

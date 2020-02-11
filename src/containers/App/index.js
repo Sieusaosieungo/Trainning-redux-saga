@@ -11,8 +11,9 @@ import theme from '../../commons/Theme';
 import configureStore from '../../store/configStore';
 import GlobalLoading from '../../components/GlobalLoading/index.js';
 import ModalApp from '../../components/Modal/index.js';
-import { ADMIN_ROUTES } from '../../constants';
+import { ADMIN_ROUTES, ROUTES } from '../../constants';
 import AdminLayoutRoute from '../../commons/Layout/AdminLayoutRoute/index.js';
+import DefaultLayoutRoute from '../../commons/Layout/DefaultLayoutRoute/index.js';
 
 const store = configureStore();
 
@@ -33,6 +34,23 @@ const App = () => {
     return xhtml;
   };
 
+  const renderDefaultRoutes = () => {
+    let xhtml = null;
+    xhtml = ROUTES.map(route => {
+      return (
+        <DefaultLayoutRoute
+          key={route.path}
+          path={route.path}
+          component={route.component}
+          exact={route.exact}
+          name={route.name}
+        />
+      );
+    });
+
+    return xhtml;
+  };
+
   return (
     <Provider store={store}>
       <BrowserRouter>
@@ -41,7 +59,10 @@ const App = () => {
           <ToastContainer />
           <GlobalLoading />
           <ModalApp />
-          <Switch>{renderAdminRoutes()}</Switch>
+          <Switch>
+            {renderAdminRoutes()}
+            {renderDefaultRoutes()}
+          </Switch>
         </ThemeProvider>
       </BrowserRouter>
     </Provider>
