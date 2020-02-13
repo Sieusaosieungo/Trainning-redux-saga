@@ -4,6 +4,7 @@ import LoginPage from '../containers/LoginPage';
 import SignupPage from '../containers/SignupPage';
 
 export const API_ENDPOINT = 'http://localhost:3000';
+export const API_AUTHEN = 'https://sell-old-items.herokuapp.com/api/users';
 
 export const STATUSES = [
   {
