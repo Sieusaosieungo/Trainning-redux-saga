@@ -7,8 +7,8 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 import { compose } from 'redux';
 import { Field, reduxForm } from 'redux-form';
 import renderTextField from '../../components/FormHelper/TextField';
@@ -16,14 +16,21 @@ import * as authActions from '../../store/modules/auth/action';
 import styles from './styles';
 
 const LoginPage = ({ classes, handleSubmit }) => {
+  const token = useSelector(state => state.auth.token);
+
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   console.log('token', token);
+  //   return <Redirect to={{ pathname: '/admin/task-board' }} />;
+  // }, [token]);
 
   const handleSubmitForm = data => {
     const { email, password } = data;
     dispatch(authActions.signin(email, password));
   };
 
-  return (
+  return !token ? (
     <div className={classes.background}>
       <div className={classes.login}>
         <Card>
@@ -69,6 +76,8 @@ const LoginPage = ({ classes, handleSubmit }) => {
         </Card>
       </div>
     </div>
+  ) : (
+    <Redirect to={{ pathname: '/admin/task-board' }} />
   );
 };
 

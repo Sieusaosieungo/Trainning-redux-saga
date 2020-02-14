@@ -1,17 +1,26 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Dashboard from '../../../components/DashBoard';
+import { getCookie } from '../../../utils/cookie';
 
 const AdminLayoutRoute = ({ component: YourComponent, ...remainProps }) => {
+  const token = getCookie('token');
   return (
     <Route
       {...remainProps}
       render={routeProps => {
-        return (
+        // return (
+        //   <Dashboard {...remainProps}>
+        //     <YourComponent {...routeProps} />
+        //   </Dashboard>
+        // );
+        return token ? (
           <Dashboard {...remainProps}>
             <YourComponent {...routeProps} />
           </Dashboard>
+        ) : (
+          <Redirect to={{ pathname: '/login' }} />
         );
       }}
     />

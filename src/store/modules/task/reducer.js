@@ -6,7 +6,7 @@ const initialState = {
   taskEditing: null,
 };
 
-const reducers = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case taskContants.FETCH_TASK: {
       return {
@@ -120,4 +120,4 @@ const reducers = (state = initialState, action) => {
   }
 };
 
-export default reducers;
+export default reducer;

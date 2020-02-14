@@ -3,6 +3,8 @@ import { signin } from '../../../apis/auth';
 import { showLoading, hideLoading } from '../ui/action';
 import * as authTypes from '../../../constants/auth';
 import { STATUS_CODE } from '../../../constants';
+import { signinSuccess, signinFailed } from './action';
+import { setCookie } from '../../../utils/cookie';
 
 function* signinSaga({ payload }) {
   const { email, password } = payload;
@@ -12,10 +14,12 @@ function* signinSaga({ payload }) {
     const { status: statusCode, data } = res;
 
     if (statusCode === STATUS_CODE.SUCCESS) {
-      console.log('Lay API thanh cong', data);
+      const { token } = data.results;
+      setCookie('token', token);
+      yield put(signinSuccess(token));
     }
   } catch (error) {
-    console.log('LOI', error.response.data.message);
+    yield put(signinFailed(error.response.data.message));
   }
   yield delay(1000);
   yield put(hideLoading());
